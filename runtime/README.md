@@ -43,7 +43,7 @@ runtime 不调用模型或网络。API key、模型选择、披露预览和工�
 
 ## 兼容性
 
-当前 `main` 的 runtime 实现版本是 `1.3.0.dev0`，属于 P0 candidate；最新带 tag 的稳定源码版本是 `1.2.0`，GitHub Release 页面尚未发布。
+当前 `main` 的 runtime 实现版本是 `1.3.0.dev0`，属于 P0 candidate；最新带 tag 的稳定源码版本是 `1.2.0`，对应 [GitHub Release](https://github.com/DY-2026/GameDesignOS/releases/tag/v1.2.0) 已公开并标记为 Latest。
 
 当前候选新增可选 UL（Uncertainty Ladder）契约：workflow 可以通过 `governance.ul_state_ref` 引用 `UL-L0`～`UL-L5` 状态；`UL-*.json` 放在 `.gamedesignos/workflow-runs/` 时会被 `ul-state.schema.json` 校验。普通领域 workflow 不需要创建该文件。
 

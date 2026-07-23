@@ -104,15 +104,15 @@ Tag 不等于 GitHub Release；本地 wheel 也不等于包已经公开发布。
 | --- | --- | --- |
 | 最新正式源码版本 | `v1.2.0`，release note 与 CHANGELOG 已存在 | `source_prepared` |
 | 远端 tag | `v0.1.0` 至 `v1.2.0` 共 13 个；`v1.2.0` 指向 `7eeb6f5` | `tag_present` |
-| GitHub Releases | 公开 Releases API 返回 0 项 | `not_published` |
+| GitHub Releases | [`v1.2.0`](https://github.com/DY-2026/GameDesignOS/releases/tag/v1.2.0) 已公开并读回验证为 Latest | `github_release_published` |
 | 包索引 | PyPI 的 `gamedesignos` 项目返回 404 | `not_published` |
 | `main` 开发线 | `1.3.0.dev0`：portable runtime 与可选 UL 控制层 | `candidate` |
 | Workspace schema | `1.0.0`，保持 v1 向后兼容 | `stable_contract` |
 
 ### 下一次公开发布建议
 
-1. 先修复并通过 Linux/Windows × Python 3.11/3.12/3.13 的完整 CI。
-2. 经 Human Gate 后，用既有 `v1.2.0` tag 与 `releases/v1.2.0.md` 创建第一个 GitHub Release，并重新打开页面验证。
+1. 推送 CI 修复分支，并通过 Linux/Windows × Python 3.11/3.12/3.13 的完整线上验证。
+2. `v1.2.0` 的第一个 GitHub Release 已完成发布与页面读回，不需要重建 tag。
 3. `v1.3.0.dev0` 继续保持 candidate；只有 roadmap 的 UL 迁移证据与 package/CI 退出门满足后，才准备 `v1.3.0` release commit、tag 和 GitHub Release。
 4. PyPI 发布不是当前默认动作；只有明确需要 `pip install gamedesignos` 的公开分发承诺时再增加该渠道和凭据治理。
 

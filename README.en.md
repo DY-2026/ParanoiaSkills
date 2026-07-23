@@ -73,7 +73,7 @@ You still make the calls. The system supplies specialist workflows, shared hando
 | Public proof cases | 2 | Evidence-linked game-analysis and experience-density examples with explicit source boundaries |
 | Runtime | 1 | Deterministic local CLI for routing, workspace creation, validation, health checks, graphs, gates, and review-safe packs |
 
-> **Development candidate: v1.3.0.dev0.** Candidate wheels carry their own contracts/templates and `router.yaml` remains the only editable routing source. UL (Uncertainty Ladder) now has a machine-readable `ul_state` schema, UL-L0 through UL-L5, an optional workflow reference, and attribution/transfer regressions. All 7 skills still pass the Agent Skills reference validator; packaged behavior fixtures remain 9 suites / 53 evals. The latest tagged stable source version is v1.2.0; its GitHub Release page is not published yet.
+> **Development candidate: v1.3.0.dev0.** Candidate wheels carry their own contracts/templates and `router.yaml` remains the only editable routing source. UL (Uncertainty Ladder) now has a machine-readable `ul_state` schema, UL-L0 through UL-L5, an optional workflow reference, and attribution/transfer regressions. All 7 skills still pass the Agent Skills reference validator; packaged behavior fixtures remain 9 suites / 53 evals. The latest tagged stable source version is v1.2.0, and its [GitHub Release](https://github.com/DY-2026/GameDesignOS/releases/tag/v1.2.0) is published as Latest.
 
 ## Project-Ready Runtime
 

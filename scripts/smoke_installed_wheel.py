@@ -4,6 +4,7 @@
 from __future__ import annotations
 
 import json
+import os
 import subprocess
 import sys
 import tempfile
@@ -11,9 +12,12 @@ from pathlib import Path
 
 
 def run(args: list[str], *, cwd: Path) -> subprocess.CompletedProcess[str]:
+    env = dict(os.environ)
+    env["PYTHONIOENCODING"] = "utf-8"
     result = subprocess.run(
         [sys.executable, *args],
         cwd=cwd,
+        env=env,
         text=True,
         encoding="utf-8",
         errors="replace",

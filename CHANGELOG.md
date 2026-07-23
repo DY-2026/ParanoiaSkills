@@ -20,7 +20,7 @@ All notable changes to GameDesignOS will be recorded here.
 - Kept UL optional and `shadow` by default: it controls uncertainty exposure between VOI selection and OODA execution, but does not replace domain skills, migrate existing workspaces, or expand Human Gate authority.
 - Centralized the package/runtime candidate version in `gamedesignos/_version.py`, removed the hard-coded version from the CI wheel-install command, and declared Python 3.11/3.12/3.13 package support.
 - Upgraded official GitHub Actions to Node 24-compatible `actions/checkout@v7` and `actions/setup-python@v7`, added read-only workflow permissions, concurrency cancellation, and a bounded job timeout.
-- Reconciled the repository architecture, GitHub About source, and release-state contract with the current public repository: 13 remote tags, no GitHub Releases, no PyPI package, and `v1.3.0.dev0` still candidate.
+- Reconciled the repository architecture, GitHub About source, and release-state contract with the current public repository: 13 remote tags, a verified Latest GitHub Release for `v1.2.0`, no PyPI package, and `v1.3.0.dev0` still candidate.
 - Added the two packaged static behavior-eval fixture suites to CI.
 - Added trustworthiness regressions for README schema counts and runtime/schema decision-type parity.
 - Refreshed product architecture, roadmap, usage, and v1.2 release-status documentation to match the current tagged runtime.
@@ -28,7 +28,7 @@ All notable changes to GameDesignOS will be recorded here.
 
 ### Fixed
 
-- Made CLI stdout/stderr and installed-wheel smoke capture use an explicit UTF-8 contract so Chinese output does not crash or become locale-dependent on redirected Windows streams.
+- Made CLI stdout/stderr, installed-wheel smoke capture, and every nested smoke subprocess use an explicit UTF-8 contract so Chinese output does not crash or become locale-dependent on redirected Windows streams.
 - Restored isolated sdist-to-wheel rebuilding so clean Python 3.12/3.13 environments install the declared `setuptools.build_meta` backend instead of relying on ambient build tools.
 - Completed the static v1 workspace template with its declared `00-inbox/` guide and added the file to package smoke coverage.
 - Aligned v1 Assumption, Evidence, Experiment, and Workflow runtime records with their canonical schemas and added a full-cycle schema regression.

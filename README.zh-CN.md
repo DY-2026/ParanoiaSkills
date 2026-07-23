@@ -73,7 +73,7 @@ GameDesignOS 补的是中间那层操作系统：把 agent 输出转成有来源
 | 公开 proof case | 2 | 带证据边界的游戏体验分析与体验浓度实验案例 |
 | Runtime | 1 | 用于路由、创建 workspace、校验、健康扫描、决策图、gate 和可评审 pack 的确定性本地 CLI |
 
-> **开发候选版本：v1.3.0.dev0。** 候选 wheel 已自带 contracts/templates，`router.yaml` 是唯一可编辑路由真源；UL（Uncertainty Ladder，不确定性阶梯）现在拥有 `ul_state` schema、UL-L0～UL-L5、workflow 可选引用与失败归因/迁移回归。7/7 skill 通过 Agent Skills 规范，现有行为夹具仍为 9 suites / 53 evals。最新带 tag 的稳定源码版本是 v1.2.0；对应 GitHub Release 页面尚未发布。
+> **开发候选版本：v1.3.0.dev0。** 候选 wheel 已自带 contracts/templates，`router.yaml` 是唯一可编辑路由真源；UL（Uncertainty Ladder，不确定性阶梯）现在拥有 `ul_state` schema、UL-L0～UL-L5、workflow 可选引用与失败归因/迁移回归。7/7 skill 通过 Agent Skills 规范，现有行为夹具仍为 9 suites / 53 evals。最新带 tag 的稳定源码版本是 v1.2.0，对应 [GitHub Release](https://github.com/DY-2026/GameDesignOS/releases/tag/v1.2.0) 已公开并标记为 Latest。
 
 ## v1.2.0 Project-Ready Runtime
 
