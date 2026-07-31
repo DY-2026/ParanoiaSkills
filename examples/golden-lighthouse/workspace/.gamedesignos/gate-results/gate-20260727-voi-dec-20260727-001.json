@@ -1,0 +1,14 @@
+{
+  "schema_version": "1.0.0",
+  "gate_id": "GATE-20260727-VOI-DEC-20260727-001",
+  "gate_type": "voi",
+  "target": "DEC-20260727-001",
+  "status": "pass",
+  "reason": "The decision is near-boundary, so a small probe can be justified if its signals map to different actions.",
+  "required_actions": [
+    "Create or review a qualitative VOI assessment before running the probe."
+  ],
+  "blocked_actions": [],
+  "reviewer": "gamedesignos-runtime",
+  "human_gate_required": false
+}

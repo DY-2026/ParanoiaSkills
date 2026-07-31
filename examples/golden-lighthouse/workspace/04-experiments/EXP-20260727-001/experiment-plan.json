@@ -1,0 +1,22 @@
+{
+  "schema_version": "1.0.0",
+  "experiment_id": "EXP-20260727-001",
+  "title": "三分钟核心循环验证",
+  "target_decision": "DEC-20260727-001",
+  "target_assumptions": [
+    "ASM-20260727-001"
+  ],
+  "hypothesis": "如果方向成立，测试者能在三分钟内说出目标、阻力和下一步想做什么。",
+  "method": "三分钟核心循环原型 + 3-5 人观察。",
+  "sample_size": 5,
+  "success_criteria": [
+    "3-5 人中多数能说出目标、阻力和下一步动作。",
+    "测试后能决定下一轮默认动作是否继续保持。"
+  ],
+  "failure_criteria": [
+    "多数测试者无法解释目标或乐趣来源。",
+    "测试后仍无法判断下一轮要继续、调整还是暂停。"
+  ],
+  "result_status": "reviewed",
+  "review_status": "reviewed"
+}

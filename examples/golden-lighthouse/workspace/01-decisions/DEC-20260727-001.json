@@ -1,0 +1,48 @@
+{
+  "schema_version": "1.0.0",
+  "decision_id": "DEC-20260727-001",
+  "title": "Synthetic Lighthouse Tactics：第一轮验证方向",
+  "decision_question": "Can players understand the repair-versus-defend tradeoff in three minutes?",
+  "owner": "gamedesignos-golden-fixture",
+  "status": "accepted",
+  "decision_type": "prototype_direction",
+  "boundary_status": "near",
+  "stakes": "medium",
+  "reversibility": "reversible",
+  "current_default_action": "Repair-first route",
+  "options": [
+    {
+      "option_id": "OPT-001",
+      "action": "Repair-first route",
+      "expected_benefit": "",
+      "main_risk": ""
+    },
+    {
+      "option_id": "OPT-002",
+      "action": "Defense-first route",
+      "expected_benefit": "",
+      "main_risk": ""
+    }
+  ],
+  "evidence_refs": [
+    "EVD-20260727-001"
+  ],
+  "assumption_refs": [
+    "ASM-20260727-001"
+  ],
+  "experiment_refs": [
+    "EXP-20260727-001"
+  ],
+  "gate_refs": [
+    "GATE-20260727-VOI-DEC-20260727-001"
+  ],
+  "decision_result": {
+    "status": "accepted",
+    "by": "fixture",
+    "reason": "Synthetic experiment passed and rollback remains explicit.",
+    "date": "2026-07-27"
+  },
+  "rollback_trigger": "Fewer than four of five can explain the tradeoff.",
+  "accepted_by": "fixture",
+  "accepted_reason": "Synthetic experiment passed and rollback remains explicit."
+}

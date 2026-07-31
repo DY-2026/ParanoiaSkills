@@ -1,0 +1,34 @@
+schema_version: 1.0.0
+workspace_type: gamedesignos-project
+project:
+  id: synthetic-lighthouse-tactics
+  title: Synthetic Lighthouse Tactics
+  codename: synthetic-lighthouse-tactics
+  status: concept
+  visibility: public-synthetic
+  owner: gamedesignos-golden-fixture
+  target_platforms: []
+  tags: []
+designos:
+  version: 1.3.0.dev0
+  public_base_repo: DY-2026/GameDesignOS
+  private_overlay: false
+assets:
+  index: design-asset-index.json
+  inbox_dir: 00-inbox
+  decisions_dir: 01-decisions
+  assumptions_dir: 02-assumptions
+  evidence_dir: 03-evidence
+  experiments_dir: 04-experiments
+  design_assets_dir: 05-design-assets
+  workflows_dir: 06-workflows
+  learning_dir: 07-learning
+  exports_dir: 08-exports
+rules:
+  decision_first: true
+  evidence_bound: true
+  experiment_before_commitment: true
+  human_gate_owns_commitment: true
+  learning_must_persist: true
+  rollback_before_confidence: true
+  public_private_boundary: true

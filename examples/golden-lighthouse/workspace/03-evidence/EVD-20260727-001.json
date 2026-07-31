@@ -1,0 +1,16 @@
+{
+  "schema_version": "1.0.0",
+  "evidence_id": "EVD-20260727-001",
+  "source_type": "playtest",
+  "source_status": "synthetic",
+  "summary": "Synthetic fixture: four of five testers explained the tradeoff.",
+  "confidence": "medium",
+  "decision_impact": "Keep repair-first as the next prototype default.",
+  "used_by_decisions": [
+    "DEC-20260727-001"
+  ],
+  "used_by_assumptions": [],
+  "unsupported_claims": [
+    "Does not establish retention or commercial demand."
+  ]
+}

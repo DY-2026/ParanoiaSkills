@@ -1,0 +1,92 @@
+{
+  "schema_version": "1.0.0",
+  "workflow_id": "idea-to-validation",
+  "version": "1.3.0.dev0",
+  "run_id": "WRUN-20260727-001",
+  "status": "running",
+  "current_node": "evidence_review",
+  "governance": {
+    "evolver_required": true,
+    "enforcement_mode": "shadow",
+    "status": "pending",
+    "intent_work_order_ref": null,
+    "decision_ref": "DEC-20260727-001",
+    "voi_gate_ref": "GATE-20260727-VOI-DEC-20260727-001",
+    "ul_state_ref": null,
+    "rjr_authority_ref": null,
+    "paranoia_review_ref": null,
+    "human_gate_refs": [],
+    "rollback_ref": "DEC-20260727-001",
+    "candidate_learning_refs": [],
+    "retrospective_ref": null,
+    "notes": "paranoia-ai-system-evolver checkpoint: intent, VOI, UL, RJR, drift, Human Gate, rollback, and candidate learning for idea-to-validation."
+  },
+  "nodes": [
+    {
+      "id": "decision_object",
+      "type": "decision",
+      "status": "done",
+      "required_outputs": [
+        "decision"
+      ]
+    },
+    {
+      "id": "assumption_registry",
+      "type": "assumption",
+      "status": "done",
+      "required_outputs": [
+        "assumption"
+      ]
+    },
+    {
+      "id": "voi_gate",
+      "type": "gate",
+      "status": "done",
+      "gate_type": "voi"
+    },
+    {
+      "id": "experiment_plan",
+      "type": "experiment",
+      "status": "done",
+      "required_outputs": [
+        "experiment_plan"
+      ]
+    },
+    {
+      "id": "evidence_review",
+      "type": "evidence",
+      "status": "ready",
+      "required_outputs": [
+        "evidence"
+      ]
+    },
+    {
+      "id": "human_decision",
+      "type": "gate",
+      "status": "pending",
+      "gate_type": "commitment"
+    }
+  ],
+  "edges": [
+    {
+      "from": "decision_object",
+      "to": "assumption_registry"
+    },
+    {
+      "from": "assumption_registry",
+      "to": "voi_gate"
+    },
+    {
+      "from": "voi_gate",
+      "to": "experiment_plan"
+    },
+    {
+      "from": "experiment_plan",
+      "to": "evidence_review"
+    },
+    {
+      "from": "evidence_review",
+      "to": "human_decision"
+    }
+  ]
+}

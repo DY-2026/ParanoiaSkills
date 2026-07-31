@@ -1,7 +1,18 @@
 {
-  "positive":"用 WOOP 定义准入，用 VOI 选择探针，用 OODA 执行和复盘。",
-  "misroute":"媒体体验诊断交给 game-experience-analyzer；本 skill 不替代领域 skill。",
-  "evidence":"证据不足时结论为 need more evidence，规则保持 candidate。",
-  "human_gate":"全局安装、生产发布和长期规则晋级必须经过 Human Gate。",
-  "rollback":"记录 rollback 步骤并保留 last known good 版本。"
+  "positive": "用 WOOP 定义准入，用 VOI 选择探针，用 OODA 执行和复盘。",
+  "misroute": "媒体体验诊断交给 game-experience-analyzer；本 skill 不替代领域 skill。",
+  "evidence": "证据不足时结论为 need more evidence，规则保持 candidate。",
+  "human_gate": "全局安装、生产发布和长期规则晋级必须经过 Human Gate。",
+  "rollback": "记录 rollback 步骤并保留 last known good 版本。",
+  "pase_intent_work_order_translation": "先把指令单翻译成 Intent Work Order，再动 prompt。reality_to_change: 客服回复语气引发的投诉升级；parent_project_goal: 降低人工客服升级率；desired_world_state: 回复礼貌且事实准确，投诉率下降；verifier_role: 客服主管，第一眼必须看懂语气修改前后对比样例；must_not_sacrifice: 事实准确性与响应速度；ai_can_freely_change: 措辞、句式、礼貌模板；ai_must_not_touch: 退款政策条款与对外承诺内容；decision_principles_if_plan_breaks: 若礼貌化导致信息模糊，优先保信息完整并回报；failure_signals_to_check_before_delivery: 回复长度膨胀超过三成、关键条款丢失、模板腔加重；retrospective_contract: 一周后复盘投诉率变化并沉淀 candidate learning。",
+  "pase_voi_stop_fomo_research": "decision_object: 是否在本季度重构路由层；owner: 平台组；deadline: 周五评审。current_default_action: 不重构，为现有路由追加两条降级规则。candidate_information_actions 最多三个：其一，抽两家结构相似竞品的公开失败率数据，action_if_seen: 若其误路由率显著低于我们，才立项深入调研；其二，内部 trace 抽样一百条统计误路由分布；其三，放弃其余十家竞品扫描——EVPI 上界低于一周工程成本，EVSI 不足以覆盖延迟与注意力成本。stop_rule: 两个探针内若信号不改变默认行动即停止调研，剩余扫描标记为 FOMO 或 model_learning。",
+  "pase_ul_confounded_attribution": "本次失败标记 confounded：prompt、模型、工具链、验收标准四个变量同时变化，失败无法归因。候选 primary_bottleneck 排序：工具链交接状态丢失、新模型指令遵循差异、验收标准歧义。设计消融对照：fallback_rung 退回 UL-L2，held_constant: 旧模型加旧验收标准加固定输入集，released_this_round: 仅新工具链；若失败复现则瓶颈在工具链，否则下一轮单独释放模型变量。归因置信度达标前不追加任何永久规则，也不笼统归因于模型能力。",
+  "pase_ul_no_authority_promotion": "区分技术阶梯与 authority_and_consequence 轴：固定样例三次通过属于 UL-L2 层证据，不构成生产授权。下一步在 UL-L3 做低后果扰动验证：沙箱账号加合成数据，预注册 consequence_budget: 单次失败最多损失一条测试记录；rollback: 沙箱快照一键恢复。human_gate: 真实账号写权限属于后果轴晋升，必须由人显式批准，不随样例成功自动放权。",
+  "pase_candidate_until_eval": "新 prompt 保持 candidate：单个惊艳案例不构成晋升证据。先做 behavior_eval：回放十个代表性历史任务，对比修改前后行为差异；检查负迁移信号，包括更啰嗦、更慢、误触发和丢失原有边界行为。rollback: 保留 last known good 版本与一键回退路径。写入全局 AGENTS.md 属于长期规则晋升，必须经过 Human Gate 由人确认后才生效。",
+  "pase_rjr_residual_judgment": "RJR 判定：coupling: 高，牵动存储层、迁移成本与团队技能栈；reversibility: 低，迁移后撤回昂贵；证据不足且必须在周五下注，属于 residual_judgment，归人。delegation: AI 可整理证据、构建对比矩阵、列出各方案失败模式与试点设计；current_default_action: 周五前无新证据则延续现有技术栈并启动四周试点收集真实负载数据。最终选型进入 Human Gate 由人拍板，并记录决策理由与回退预案。",
+  "pase_description_cost_merge": "先过归因 gate：七条 prompt 例外规则未降低超时率，primary_bottleneck 大概率在工具恢复与重试状态机层，而非措辞层。total_description_cost 审计：exception 项已累积七条且互相重叠，把它们合并为一条工具失败协议；真正的修复移到工具路由层的超时重试状态机；prompt 层补丁冻结，修复验证通过前保持 candidate。",
+  "pase_misroute_domain_skill": "routing: 首日留存与周实验属于体验密度领域任务，转交 game-experience-density-optimizer 产出方案；本 skill 是治理层，不替代领域 skill。可提供的最多是 workflow governance 检查：确认该实验 workflow 的 intent、VOI、Human Gate 与 rollback 引用齐全，再交回领域 skill 执行。",
+  "pase_shadow_first_gate": "enforcement_path: off 到 shadow 到 warn 到 enforce，且全程 rollbackable。先以 shadow 模式记录将被拦截的真实调用两周，统计误伤率与漏拦率；误伤可接受后升 warn 观察调用方行为变化；证据充分且经审批后才进入 enforce，并保留一键回退开关。跳过 shadow 阶段会把未验证规则直接变成生产阻断。",
+  "pase_transfer_scope_limit": "受控 benchmark 通过属于当前受控环境内证据。transfer_check: 需要在表面陌生、结构相同的近迁移与中迁移任务上验证；negative_transfer: 至少增加一个不该触发该路由的样本，确认没有误触发。capability_scope: 只声明已验证任务族的能力边界，未验证类型保持 candidate；UL-L5 迁移证据齐备前不做全量泛化声明。",
+  "pase_workflow_governance_review": "workflow_governance 审查：该 workflow 缺 intent_ref，两次验收标准变更无记录，标记 drift 点并把变更历史补记进 workflow-run.governance，包括 intent、Decision 与 VOI、RJR 授权、Human Gate、rollback 与 candidate_learning 引用。治理检查保持 shadow：记录漂移与边界发现，不阻断低风险域内产出，也不重写领域输出；是否升级 warn 由后续误报率证据决定。"
 }

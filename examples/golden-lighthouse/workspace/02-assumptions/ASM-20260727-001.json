@@ -1,0 +1,16 @@
+{
+  "schema_version": "1.0.0",
+  "assumption_id": "ASM-20260727-001",
+  "statement": "Four of five synthetic testers can explain the tradeoff after three minutes.",
+  "type": "player_understanding",
+  "risk_level": "medium",
+  "confidence": "low",
+  "linked_decisions": [
+    "DEC-20260727-001"
+  ],
+  "test_method": "三分钟核心循环原型 + 3-5 人观察。",
+  "validation_status": "tested",
+  "kill_condition": "多数测试者无法说清目标、阻力或乐趣来源。",
+  "validation_note": "Covered by the reviewed synthetic experiment.",
+  "updated_at": "2026-07-27"
+}

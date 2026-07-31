@@ -1,0 +1,71 @@
+{
+  "schema_version": "1.0.0",
+  "workspace_id": "synthetic-lighthouse-tactics",
+  "assets": [
+    {
+      "asset_id": "ASSET-DECISION-001",
+      "asset_type": "decision",
+      "title": "Synthetic Lighthouse Tactics：第一轮验证方向",
+      "path": "01-decisions/DEC-20260727-001.json",
+      "format": "json",
+      "created_by": "human-agent",
+      "source_status": "synthetic",
+      "review_status": "draft",
+      "upstream_assets": [],
+      "downstream_assets": [],
+      "notes": "v1 Decision Object."
+    },
+    {
+      "asset_id": "ASSET-ASM-001",
+      "asset_type": "assumption",
+      "title": "Four of five synthetic testers can explain the tradeoff after three minutes.",
+      "path": "02-assumptions/ASM-20260727-001.json",
+      "format": "json",
+      "created_by": "human-agent",
+      "source_status": "synthetic",
+      "review_status": "draft",
+      "upstream_assets": [],
+      "downstream_assets": [],
+      "notes": "v1 Assumption."
+    },
+    {
+      "asset_id": "ASSET-EXP-001",
+      "asset_type": "experiment",
+      "title": "三分钟核心循环验证",
+      "path": "04-experiments/EXP-20260727-001/experiment-plan.json",
+      "format": "json",
+      "created_by": "human-agent",
+      "source_status": "synthetic",
+      "review_status": "draft",
+      "upstream_assets": [],
+      "downstream_assets": [],
+      "notes": "v1 Experiment Plan."
+    },
+    {
+      "asset_id": "ASSET-WRUN-001",
+      "asset_type": "workflow-run",
+      "title": "想法到验证 WRUN-20260727-001",
+      "path": ".gamedesignos/workflow-runs/WRUN-20260727-001.json",
+      "format": "json",
+      "created_by": "human-agent",
+      "source_status": "synthetic",
+      "review_status": "draft",
+      "upstream_assets": [],
+      "downstream_assets": [],
+      "notes": "v1 Workflow Run."
+    },
+    {
+      "asset_id": "ASSET-EVD-001",
+      "asset_type": "evidence",
+      "title": "Synthetic fixture: four of five testers explained the tradeoff.",
+      "path": "03-evidence/EVD-20260727-001.json",
+      "format": "json",
+      "created_by": "human-agent",
+      "source_status": "synthetic",
+      "review_status": "draft",
+      "upstream_assets": [],
+      "downstream_assets": [],
+      "notes": "v1 Evidence."
+    }
+  ]
+}
