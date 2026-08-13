@@ -12,6 +12,7 @@ This directory defines the product boundary and evolution path of GameDesignOS.
 - [v0.9.0 Definition](./v0.9.0-definition.md): executable local runtime boundary, commands, success criteria, and release gate.
 - [v1.0 Development Plan](./v1.0-development-plan.md): Project-Ready GameDesignOS 的开发计划、门禁、验收标准和 rollback。
 - [Roadmap](./roadmap.md): the path from Runtime Foundation to a project-ready operating system with explicit RJR-AI authority, workflow-governance boundaries, portable runtime evidence, and candidate UL transfer gates.
+- [v1.3 UL Exit-Gate Evidence](./v1.3-ul-exit-gate-evidence.md): local evidence for two structurally different engineering tasks, negative transfer, portability consistency, and description-cost review.
 
 ## Product Test
 

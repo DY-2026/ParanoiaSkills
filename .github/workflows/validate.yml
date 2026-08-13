@@ -35,8 +35,10 @@ jobs:
       - name: Validate repository
         run: python scripts/validate_repo.py
 
-      - name: Run script and runtime tests
-        run: python -m unittest discover -s scripts/tests
+      - name: Run tests and enforce coverage baseline
+        run: |
+          python -m coverage run --source=gamedesignos -m unittest discover -s scripts/tests
+          python -m coverage report --fail-under=80
 
       - name: Run packaged behavior eval fixtures
         run: python scripts/run_behavior_evals.py --all-packaged

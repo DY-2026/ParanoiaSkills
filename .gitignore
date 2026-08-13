@@ -4,6 +4,8 @@ _private_translations/
 # Local runtime and tool caches
 __pycache__/
 .pytest_cache/
+.coverage
+.coverage.*
 .ruff_cache/
 .venv/
 venv/

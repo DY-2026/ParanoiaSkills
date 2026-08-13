@@ -727,6 +727,46 @@ def _check_p0_portability(repo_root: Path, errors: list[str]) -> None:
             errors.append(f"{skill_name}: synthetic outputs must cover all P0 behavior eval ids")
 
 
+TRILINGUAL_SUFFIXES = (".md", ".zh-CN.md", ".en.md")
+
+
+def _trilingual_stem(name: str) -> str:
+    for suffix in (".zh-CN.md", ".en.md"):
+        if name.endswith(suffix):
+            return name[: -len(suffix)]
+    return name[: -len(".md")]
+
+
+def _check_trilingual_mirrors(repo_root: Path, errors: list[str]) -> None:
+    """Trilingual packages must keep every topic in all three language files.
+
+    The default `.md` file may be a thin pointer and the English file may use
+    independent wording, so only completeness is enforced, not structure.
+    """
+
+    skill_root = repo_root / "paranoia-ai-system-evolver"
+    for folder in ("references", "templates"):
+        directory = skill_root / folder
+        if not directory.is_dir():
+            errors.append(f"{directory}: trilingual directory missing")
+            continue
+        stems = {_trilingual_stem(path.name) for path in directory.glob("*.md")}
+        for stem in sorted(stems):
+            missing = [
+                suffix
+                for suffix in TRILINGUAL_SUFFIXES
+                if not (directory / f"{stem}{suffix}").is_file()
+            ]
+            if missing:
+                errors.append(
+                    f"{directory / stem}: trilingual mirror incomplete, missing {', '.join(missing)}"
+                )
+
+    for readme in ("README.md", "README.zh-CN.md", "README.en.md"):
+        if not (skill_root / readme).is_file():
+            errors.append(f"{skill_root / readme}: trilingual README trio incomplete")
+
+
 def main() -> int:
     repo_root = Path(__file__).resolve().parents[1]
     all_errors: list[str] = []
@@ -747,6 +787,7 @@ def main() -> int:
     _check_public_readme_surface(repo_root, all_errors)
     _check_p0_portability(repo_root, all_errors)
     _check_repo_data_files(repo_root, all_errors)
+    _check_trilingual_mirrors(repo_root, all_errors)
 
     if all_errors:
         print("Repository validation failed:")

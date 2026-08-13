@@ -149,6 +149,8 @@ v1.2.0 把意图、授权边界和流程漂移记录带入工作流运行，而�
 - `ul_state` schema、workflow 引用、source checkout、wheel snapshot 和 installed-wheel smoke 全部一致；
 - 新增描述成本没有超过其减少返工与错误归因的收益。
 
+本地退出门证据见 [`v1.3-ul-exit-gate-evidence.md`](./v1.3-ul-exit-gate-evidence.md)；正式晋升仍等待跨平台 CI 与 Human Gate。
+
 ## Later Exploration
 
 只有 v1.0 foundation 稳定后再探索：
