@@ -1,0 +1,14 @@
+{
+  "id": "fixture-gamedesignos-001",
+  "object": "chat.completion",
+  "choices": [
+    {
+      "index": 0,
+      "message": {
+        "role": "assistant",
+        "content": "# Synthetic candidate\n\nThis offline fixture proves response parsing and artifact commit only. It is not evidence that a live model or provider works."
+      },
+      "finish_reason": "stop"
+    }
+  ]
+}

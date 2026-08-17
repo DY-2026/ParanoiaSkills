@@ -2,6 +2,15 @@
 
 这份指南给第一次使用的人。目标不是把所有命令都学完，而是先把一个真实项目的第一轮验证链路跑起来。
 
+## 0. 先看完整 synthetic 链路
+
+```bash
+python -m pip install -e .
+python -m gamedesignos demo
+```
+
+这条命令不调用模型、不需要密钥。它会在系统临时目录生成一份全新的公开 synthetic 工作区，展示 Decision、Assumption、Evidence、已复盘 Experiment、rollback 和下一步，并在 `decision accept` 的 Human Gate 前停住。终端会打印实际路径；需要固定位置时使用 `--destination <空目录>`。
+
 ## 1. 直接说一句
 
 拉取项目后，在仓库根目录直接执行：
@@ -10,7 +19,7 @@
 python -m gamedesignos "我想做一款修灯塔的策略游戏"
 ```
 
-它会自动推荐 skill。对项目型请求，还会创建 Project-Ready workspace。
+它会自动推荐 skill，但默认只做路由和状态审计，不会创建或修改 workspace。要开始长期项目，请显式提供 `--destination` / `--workspace`，或使用下一节的 `start` 命令。
 
 如果想安装成 `gamedesignos` 命令：
 

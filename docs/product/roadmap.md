@@ -141,6 +141,9 @@ v1.2.0 把意图、授权边界和流程漂移记录带入工作流运行，而�
 - `ul-state.schema.json`、示例、回归案例和 validators 构成机器可校验的最小闭环；
 - workspace schema 保持 `1.0.0`，无需迁移既有 v1 项目；
 - 全局 skill 同步、正式版本、tag、release 与 `shadow -> warn/enforce` 晋升仍需 Human Gate 和真实迁移证据。
+- `ask` / `start` 的十分钟上手说明已由回归测试锁定为“默认只路由，显式目标才写盘”；
+- `gamedesignos demo` 提供零模型、零密钥、安装包内自包含的 Golden Lighthouse 演示，并停在 Commitment Human Gate 前；
+- OpenAI-compatible 接入从伪代码升级为 preview-first 参考 Harness：精确预览、`--execute` 一次性授权、语义检查点、`outcome_unknown` 与离线 fixture 均保持在 `examples/hosts/`，不进入核心模型网关。
 
 候选退出门：
 
@@ -150,6 +153,26 @@ v1.2.0 把意图、授权边界和流程漂移记录带入工作流运行，而�
 - 新增描述成本没有超过其减少返工与错误归因的收益。
 
 本地退出门证据见 [`v1.3-ul-exit-gate-evidence.md`](./v1.3-ul-exit-gate-evidence.md)；正式晋升仍等待跨平台 CI 与 Human Gate。
+
+## v1.4 Exploration Candidate — Local MCP Boundary
+
+详细边界见 [`v1.4-mcp-boundary-rfc.md`](./v1.4-mcp-boundary-rfc.md)。当前只完成不扩大权限的前置切片，不代表 MCP server 已交付：
+
+- 抽出 CLI 与未来 adapter 共用的只读 Application Service；
+- 修复 v1 `status` 误读 legacy decision log 的真源问题；
+- 将首个 MCP 候选锁定为 `stdio-first`、单 workspace、零模型、零密钥、只读；
+- `preview_gate` 强制不写盘，Decision accept/reject/supersede、发布、删除、权限和资金能力不进入 alpha catalog；
+- 暂不增加 MCP SDK 或 host 配置，先用 Codex、Claude Desktop、VS Code fixture matrix 选择并 pin 依赖；
+- workspace schema 继续保持 `1.0.0`，adapter 可独立移除。
+
+候选退出门：
+
+- CLI / Application Service / MCP fixture 语义一致；
+- 全部 P0 调用后 workspace 哈希与目录清单不变；
+- path escape、stdout 污染、隐私字段、traceback 与禁用工具负向测试通过；
+- source checkout、wheel、sdist rebuild 与 installed-wheel smoke 一致；
+- 至少两个真实 host 通过兼容矩阵，且安装命令与 workspace 范围经过 Human Gate；
+- 描述成本低于它减少 adapter 重复逻辑和文本解析错误的收益。
 
 ## Later Exploration
 

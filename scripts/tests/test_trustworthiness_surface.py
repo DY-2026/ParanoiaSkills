@@ -100,6 +100,38 @@ class TrustworthinessSurfaceTest(unittest.TestCase):
         self.assertEqual(missing_from_runtime, set())
         self.assertEqual(missing_from_schema, set())
 
+    def test_ask_start_onboarding_parity(self) -> None:
+        chinese_guide = (
+            REPO_ROOT / "docs" / "try-it-in-10-minutes.zh-CN.md"
+        ).read_text(encoding="utf-8")
+        self.assertIn("默认只做路由和状态审计", chinese_guide)
+        self.assertIn("不会创建或修改 workspace", chinese_guide)
+        self.assertNotIn("对项目型请求，还会创建 Project-Ready workspace", chinese_guide)
+
+        english_guide = (REPO_ROOT / "docs" / "try-it-in-10-minutes.md").read_text(
+            encoding="utf-8"
+        )
+        self.assertIn("without writing by default", english_guide)
+        self.assertIn("use `start`", english_guide)
+
+        runtime_readme = (REPO_ROOT / "runtime" / "README.md").read_text(encoding="utf-8")
+        self.assertIn("默认只推荐 skill，不写盘", runtime_readme)
+        self.assertNotIn("对项目型请求，还会创建 v1 workspace", runtime_readme)
+
+    def test_demo_onboarding_surface_preserves_human_gate(self) -> None:
+        surfaces = [
+            REPO_ROOT / "README.md",
+            REPO_ROOT / "README.en.md",
+            REPO_ROOT / "README.zh-CN.md",
+            REPO_ROOT / "runtime" / "README.md",
+            REPO_ROOT / "runtime" / "cli" / "README.md",
+            REPO_ROOT / "runtime" / "cli" / "commands.md",
+        ]
+        for path in surfaces:
+            text = path.read_text(encoding="utf-8")
+            self.assertIn("gamedesignos demo", text, path)
+            self.assertIn("Human Gate", text, path)
+
 
 if __name__ == "__main__":
     unittest.main()

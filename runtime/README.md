@@ -11,6 +11,7 @@ runtime 层定义项目 workspace、contracts、skills、adapters、本地命令
 - v0.8/v0.9 legacy workspace 兼容；
 - Decision、Assumption、Evidence、Experiment、Learning、GateResult、WorkflowRun 契约；
 - 初始化、状态、路由、对象创建、门禁、工作流、图导出、校验、打包和诊断；
+- 零模型、零密钥、停在 Human Gate 前的 `gamedesignos demo`；
 - 确定性 Project Health 与 Next Best Action；
 - RJR-AI 剩余判断权边界：AI、Workflow、Eval、权限、知识库和 Human Gate 的职责分层。
 
@@ -21,13 +22,21 @@ python -m pip install -e .
 gamedesignos --version
 ```
 
-最简单的上手方式是直接说一句：
+先用一条命令查看完整的公开 synthetic 决策链：
+
+```bash
+python -m gamedesignos demo
+```
+
+它会生成 Decision、Assumption、Evidence 和已复盘 Experiment，展示 Gate 与下一步，然后停在 `decision accept` 的 Human Gate 前。
+
+需要路由真实需求时，直接说一句：
 
 ```bash
 python -m gamedesignos "我想做一款修灯塔的策略游戏"
 ```
 
-它会自动推荐 skill。对项目型请求，还会创建 v1 workspace、第一条 Decision、第一条 Assumption、第一份三分钟验证 Experiment、VOI Gate 和 `idea-to-validation` 工作流。完成后只需要做一件事：跑一次 3-5 人/自测的三分钟验证，然后按输出里的 `gamedesignos evidence add ...` 记录观察。
+自然语言入口默认只推荐 skill，不写盘。只有显式提供 `--destination` / `--workspace`，或调用 `start`，才会创建或恢复 v1 workspace，并准备第一条 Decision、Assumption、三分钟验证 Experiment、VOI Gate 和 `idea-to-validation` 工作流。完成后只需要做一件事：跑一次 3-5 人/自测的三分钟验证，然后按输出里的 `gamedesignos evidence add ...` 记录观察。
 
 需要精细控制时，再使用 Project-Ready 进阶命令：
 

@@ -1,79 +1,61 @@
 # OpenAI-Compatible Adapter
 
-This adapter sketch is intentionally pseudocode. Do not hard-code API keys in this repository.
+GameDesignOS now ships a runnable, dependency-light reference host at [`../examples/hosts/openai_compatible.py`](../examples/hosts/openai_compatible.py). It can exercise one Skill against DeepSeek, Qwen, OpenRouter, or another OpenAI-compatible `/chat/completions` endpoint without turning the GameDesignOS core into a model gateway.
 
-`GameDesignOS` provides Markdown skill instructions. The host harness owns credentials, model selection, network calls, logging, and safety policy.
+## Ownership Boundary
 
-## Minimal Flow
+GameDesignOS owns:
 
-```python
-from pathlib import Path
+- the selected Skill instructions;
+- local request preview and response-shape validation;
+- a candidate execution receipt with semantic checkpoints;
+- explicit output files in a user-selected directory.
 
+The host environment still owns:
 
-REPO = Path("GameDesignOS")
+- endpoint and model selection;
+- credentials, billing, provider terms, and rate limits;
+- network and private-material authorization;
+- any later workspace diff, writeback, Human Gate, and rollback.
 
-
-def load_text(path: Path) -> str:
-    return path.read_text(encoding="utf-8")
-
-
-def load_skill(skill_name: str) -> dict:
-    skill_dir = REPO / skill_name
-    return {
-        "name": skill_name,
-        "skill": load_text(skill_dir / "SKILL.md"),
-        "references": skill_dir / "references",
-        "templates": skill_dir / "templates",
-    }
-
-
-def select_context(skill: dict, user_task: str) -> str:
-    # Keep context small. Add only references/templates that can change the output.
-    extra_sections = []
-
-    if "validation" in user_task.lower():
-        path = skill["templates"] / "validation-plan.md"
-        if path.exists():
-            extra_sections.append(load_text(path))
-
-    return "\n\n".join([skill["skill"], *extra_sections])
-
-
-def run_agent(client, skill_name: str, user_task: str, user_materials: str) -> str:
-    skill = load_skill(skill_name)
-    context = select_context(skill, user_task)
-
-    response = client.chat.completions.create(
-        model="your-host-selected-model",
-        messages=[
-            {
-                "role": "system",
-                "content": "Follow the selected Markdown skill. Keep public examples synthetic/public/cleared.",
-            },
-            {
-                "role": "developer",
-                "content": context,
-            },
-            {
-                "role": "user",
-                "content": f"{user_task}\n\nMaterials:\n{user_materials}",
-            },
-        ],
-    )
-
-    markdown = response.choices[0].message.content
-    Path("outputs").mkdir(exist_ok=True)
-    Path("outputs/result.md").write_text(markdown, encoding="utf-8")
-    return markdown
-```
-
-## Validation
-
-After generation:
+The script reads only these environment variables:
 
 ```text
-python scripts/validate_repo.py
-python scripts/validate_skill.py <skill-folder>
+GAMEDESIGNOS_BASE_URL
+GAMEDESIGNOS_MODEL
+GAMEDESIGNOS_API_KEY
 ```
 
-For structured outputs, parse JSON/YAML with the host language before saving artifacts.
+The API key is never accepted as a command-line argument and is not written into the preview, receipt, or request body.
+
+## Two-Phase Live Call
+
+First prepare the exact disclosure preview without a network call:
+
+```powershell
+python examples/hosts/openai_compatible.py `
+  --skill game-concept-architect `
+  --task "Turn this lighthouse tactics idea into a bounded validation blueprint" `
+  --output-dir outputs/openai-compatible-lighthouse
+```
+
+After reviewing `request-preview.private.json`, repeat the same command with `--execute`. Any change to the task, materials, Skill, endpoint, or model invalidates the prior approval and requires a fresh dry-run.
+
+## Recovery Semantics
+
+The receipt deliberately distinguishes:
+
+| Checkpoint | Meaning | Retry guidance |
+| --- | --- | --- |
+| `request_prepared` | No external request has crossed the dispatch boundary | Safe to correct configuration and prepare again |
+| `dispatch_intent_recorded` | A billable/external request is about to be attempted | Treat as `outcome_unknown` until a response is stored |
+| `response_received` | Raw provider JSON is durably stored locally | Validate or inspect the stored response; do not pay for another call |
+| `artifact_committed` | A non-empty assistant result passed shape validation and was written | Completed; no retry |
+
+If the connection fails after the dispatch checkpoint, the harness records `status: outcome_unknown`, `safe_to_retry: false`, and requires manual verification of provider state or billing. It makes no automatic retry.
+
+## Offline Fixture
+
+CI and local smoke tests use [`../examples/hosts/fixtures/openai-chat-completion.json`](../examples/hosts/fixtures/openai-chat-completion.json). This proves request assembly, response parsing, checkpoints, and artifact commit only; it is not evidence that a real provider or model works.
+
+Full commands, privacy warnings, and current non-goals are in [`../examples/hosts/README.md`](../examples/hosts/README.md).

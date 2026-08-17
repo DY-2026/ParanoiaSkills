@@ -2,6 +2,15 @@
 
 This guide helps a new user understand and test `GameDesignOS` without adding private material to the public repository.
 
+## Run The Zero-Configuration Demo
+
+```bash
+python -m pip install -e .
+python -m gamedesignos demo
+```
+
+This command makes no model calls and needs no key. It creates a fresh public-synthetic workspace in the system temporary directory, shows a Decision, Assumption, Evidence, reviewed Experiment, rollback, and next action, then stops before the `decision accept` Human Gate. Use `--destination <empty-path>` when you want a fixed location.
+
 ## Who This Project Is For
 
 - Game designers who want evidence-linked diagnosis from screenshots, PVs, trailers, or gameplay recordings.

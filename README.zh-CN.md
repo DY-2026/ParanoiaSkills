@@ -44,10 +44,11 @@
 git clone https://github.com/DY-2026/GameDesignOS.git
 cd GameDesignOS
 python -m pip install -e .
+python -m gamedesignos demo
 python -m gamedesignos ask "我想验证一款修灯塔的策略游戏"
 ```
 
-`ask` 默认只推荐最小合适 skill，不会静默写盘。需要长期私有项目时，显式创建 workspace：
+`demo` 不调用模型、不需要密钥，会在系统临时目录创建一份全新的 `public-synthetic` 灯塔样例，补齐 Decision、Assumption、Evidence 和已复盘 Experiment，并停在 `decision accept` 的 Human Gate 前。`ask` 默认只推荐最小合适 skill，不会静默写盘。需要长期私有项目时，显式创建 workspace：
 
 ```bash
 python -m gamedesignos start "灯塔战术" --destination ../lighthouse-designos
@@ -69,7 +70,7 @@ GameDesignOS 补的是中间那层操作系统：把 agent 输出转成有来源
 | Contract schema | 19 | 决策、假设、证据、实验、UL 状态、学习记录、质量门、工作流、issue、玩家承诺和项目资产的稳定交接格式 |
 | v1 workspace 分区 | 9 | 9 个生命周期目录：Inbox、Decision、Assumption、Evidence、Experiment、Design Asset、Workflow、Learning、Export；runtime 状态独立保存在 `.gamedesignos/` |
 | 端到端工作流 | 5 | idea-to-validation、media-to-diagnosis、weekly ED experiment、evidence-to-proposal、decision-to-information |
-| 宿主 adapter | 4 | Codex、Claude Code、OpenAI-compatible agent 和本地 harness 接入说明 |
+| 宿主 adapter | 4 | Codex、Claude Code、可运行的 preview-first OpenAI-compatible 参考宿主和本地 harness 说明 |
 | 公开 proof case | 2 | 带证据边界的游戏体验分析与体验浓度实验案例 |
 | Runtime | 1 | 用于路由、创建 workspace、校验、健康扫描、决策图、gate 和可评审 pack 的确定性本地 CLI |
 

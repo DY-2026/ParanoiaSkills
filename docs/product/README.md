@@ -2,7 +2,7 @@
 
 This directory defines the product boundary and evolution path of GameDesignOS.
 
-> 中文摘要：这里描述 GameDesignOS 为什么存在、它由哪些层组成、v0.8.0 的 MVP 边界、v0.9.0 的本地 runtime 原型、v1.0.0 的 Project-Ready 工作区、v1.1.0 的 RJR-AI 剩余判断权、v1.2.0 的意图工作单与工作流治理，以及当前 v1.3 候选的可移植 runtime 与可选 UL 控制层。
+> 中文摘要：这里描述 GameDesignOS 为什么存在、它由哪些层组成、v0.8.0 的 MVP 边界、v0.9.0 的本地 runtime 原型、v1.0.0 的 Project-Ready 工作区、v1.1.0 的 RJR-AI 剩余判断权、v1.2.0 的意图工作单与工作流治理、当前 v1.3 候选的可移植 runtime 与可选 UL 控制层，以及 v1.4 MCP 本地只读边界候选。
 
 ## Documents
 
@@ -13,6 +13,7 @@ This directory defines the product boundary and evolution path of GameDesignOS.
 - [v1.0 Development Plan](./v1.0-development-plan.md): Project-Ready GameDesignOS 的开发计划、门禁、验收标准和 rollback。
 - [Roadmap](./roadmap.md): the path from Runtime Foundation to a project-ready operating system with explicit RJR-AI authority, workflow-governance boundaries, portable runtime evidence, and candidate UL transfer gates.
 - [v1.3 UL Exit-Gate Evidence](./v1.3-ul-exit-gate-evidence.md): local evidence for two structurally different engineering tasks, negative transfer, portability consistency, and description-cost review.
+- [v1.4 MCP Boundary RFC](./v1.4-mcp-boundary-rfc.md): `candidate` 级本地 `stdio-first`、只读 Application Service、权限边界、host matrix、验收门与 rollback；当前不代表已交付 MCP server。
 
 ## Product Test
 

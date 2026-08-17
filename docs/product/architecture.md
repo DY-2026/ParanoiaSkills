@@ -7,7 +7,8 @@ GameDesignOS uses four product layers and one cross-cutting governance plane. Th
 ```mermaid
 flowchart TD
     U[Designer / Agent Host] --> R[Runtime Interface]
-    R --> W[Project Workspace]
+    R --> A[Application Services]
+    A --> W[Project Workspace]
     W <--> C[Contract Layer]
     C --> S[Skill Kernel]
     S --> W
@@ -26,6 +27,7 @@ The public repository separates editable truth, executable runtime, installable 
 | Surface | Canonical paths | Responsibility |
 | --- | --- | --- |
 | Runtime package | `gamedesignos/` | Deterministic CLI, routing, workspace lifecycle, gates, graphs, validation, and packaging. |
+| Application queries | `gamedesignos/application/` | Transport-neutral read-only status, routing, health, next-action, Gate preview, graph, inspection, and validation services shared by CLI and future adapters. |
 | Specialist skills | the seven top-level `game-*` / `paranoia-*` skill directories | Independently installable expert workflows with their own references, templates, examples, metadata, and evals. |
 | Editable contracts | `contracts/` | Canonical schemas and the only editable `router.yaml`. Built wheels receive generated snapshots; package snapshots are not a second editing surface. |
 | Workspace templates | `runtime/workspace-template-v1/`, `runtime/workspace-template/` | Current Project-Ready v1 template and the compatible legacy v0.8/v0.9 template. |
@@ -143,6 +145,10 @@ The current runtime includes:
 - an executable `gamedesignos` CLI for natural-language routing, Project-Ready lifecycle commands, gates, graphs, validation, packaging, and diagnostics;
 - workspace-aware adapter guidance;
 - repository validation coverage.
+
+The Runtime Interface now contains a small read-only Application Service boundary. CLI presentation calls these services instead of owning separate status, route, health, next-action, Gate-preview, graph, inspection, or validation logic. A future MCP adapter may call the same services, but the current package does not ship an MCP server or SDK dependency. Explicit CLI write commands remain outside this read-only boundary until a separately gated write-service design exists.
+
+The candidate MCP boundary is specified in [`v1.4-mcp-boundary-rfc.md`](./v1.4-mcp-boundary-rfc.md). It is `stdio-first`, single-workspace, and read-only; host compatibility remains `needs_more_evidence`.
 
 It still does not ship a hosted API, model gateway, credential store, automatic skill execution, or project-commitment authority. UL does not expand authority. Governance checkpoints default to `shadow`; humans retain residual judgment for high-coupling, low-reversibility, under-evidenced decisions.
 

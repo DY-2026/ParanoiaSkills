@@ -63,7 +63,7 @@ GameDesignOS provides workflow and artifact contracts; it does not silently uplo
 
 ## Adapter Notes
 
-- [`openai-compatible.md`](./openai-compatible.md): minimal pseudocode for OpenAI-compatible model clients.
+- [`openai-compatible.md`](./openai-compatible.md): runnable preview-first OpenAI-compatible reference host, offline fixture, and recovery boundary.
 - [`codex.md`](./codex.md): local Codex-style skill loading and validation notes.
 - [`claude-code.md`](./claude-code.md): using skill folders as Claude Code project instructions or local docs.
 - [`local-agent-harness.md`](./local-agent-harness.md): minimum local harness component sketch.

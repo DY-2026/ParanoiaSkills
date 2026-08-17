@@ -2,6 +2,14 @@
 
 所有命令只操作本地文件。会写入文件的命令在适合时支持 `--dry-run`。CLI 不调用模型、不上传文件、不替人越过 Human Gate。
 
+## 零配置演示
+
+```bash
+gamedesignos demo [--destination EMPTY_PATH] [--json]
+```
+
+`demo` 创建一份全新的 `public-synthetic` Golden Lighthouse workspace，自动登记 synthetic Evidence、记录并复盘 Experiment、把 Assumption 标记为 `tested`，然后在 Commitment Human Gate 前停住。它的模型调用数为 0，不需要 API key，也不会替用户接受 Decision。未提供路径时使用系统临时目录；目标目录非空时拒绝覆盖。
+
 ## 自然语言入口
 
 ```bash

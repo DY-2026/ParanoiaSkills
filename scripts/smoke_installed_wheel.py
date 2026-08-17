@@ -82,6 +82,46 @@ def main() -> int:
             or "ul-state" not in ul_route.get("primary_outputs", [])
         ):
             raise SystemExit(f"Packaged router lost the UL route or output:\n{ul_route}")
+
+        demo_workspace = outside / "wheel-demo"
+        demo = json.loads(
+            run(
+                [
+                    "-m",
+                    "gamedesignos",
+                    "demo",
+                    "--destination",
+                    str(demo_workspace),
+                    "--json",
+                ],
+                cwd=outside,
+            ).stdout
+        )
+        if (
+            demo.get("human_gate", {}).get("status") != "ask_human"
+            or demo.get("decision", {}).get("status") != "proposed"
+            or not demo.get("validation", {}).get("workspace", {}).get("ok")
+        ):
+            raise SystemExit(f"Installed demo did not stop at a valid Human Gate:\n{demo}")
+        status = json.loads(
+            run(
+                [
+                    "-m",
+                    "gamedesignos",
+                    "status",
+                    "--workspace",
+                    str(demo_workspace),
+                    "--json",
+                ],
+                cwd=outside,
+            ).stdout
+        )
+        if (
+            status.get("unresolved_human_gates") != 1
+            or status.get("accepted_decisions") != 0
+            or status.get("current_default_actions") != ["Repair-first route"]
+        ):
+            raise SystemExit(f"Installed Application Service lost v1 status truth:\n{status}")
     print("OK: installed wheel is self-contained outside the source checkout")
     return 0
 

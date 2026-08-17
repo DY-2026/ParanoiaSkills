@@ -235,8 +235,14 @@ class Workspace:
 
     def status(self) -> WorkspaceStatus:
         assets = [item for item in self.load_asset_index()["assets"] if isinstance(item, dict)]
-        decisions = [item for item in self.load_decision_log()["decisions"] if isinstance(item, dict)]
         schema = str(self.manifest.get("schema_version") or "")
+        if schema == PROJECT_READY_WORKSPACE_SCHEMA_VERSION:
+            # Import locally to keep Workspace usable without a module cycle.
+            from .project_ready import load_project_ready_state
+
+            decisions = list(load_project_ready_state(self)["decisions"].values())
+        else:
+            decisions = [item for item in self.load_decision_log()["decisions"] if isinstance(item, dict)]
         runtime = str(self.designos.get("version") or "")
         return WorkspaceStatus(
             project_id=self.workspace_id,

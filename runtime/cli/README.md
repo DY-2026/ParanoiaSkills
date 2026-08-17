@@ -16,10 +16,13 @@ gamedesignos --version
 ## 快速开始
 
 ```bash
+python -m gamedesignos demo
 python -m gamedesignos "我想做一款修灯塔的策略游戏"
 ```
 
-这条命令会自动推荐 skill，但默认不写盘。只有显式提供 `--destination` / `--workspace`，或使用 `start`，才会把项目、第一条决策、第一条假设、三分钟验证实验和工作流一次准备好。
+`demo` 会生成一份全新的 `public-synthetic` 灯塔工作区，补齐证据和已复盘实验，并在 Human Gate 前停住；它不调用模型、不读取密钥，也不替人接受 Decision。默认输出到系统临时目录，也可用 `--destination PATH` 指定空目录。
+
+自然语言命令会自动推荐 skill，但默认不写盘。只有显式提供 `--destination` / `--workspace`，或使用 `start`，才会把项目、第一条决策、第一条假设、三分钟验证实验和工作流一次准备好。
 
 ## 主路径
 

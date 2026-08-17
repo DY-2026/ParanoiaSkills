@@ -44,10 +44,11 @@ evidence → experiment → decision → learning
 git clone https://github.com/DY-2026/GameDesignOS.git
 cd GameDesignOS
 python -m pip install -e .
+python -m gamedesignos demo
 python -m gamedesignos ask "I want to validate a lighthouse tactics game"
 ```
 
-`ask` recommends the smallest suitable skill without writing by default. For a persistent private project, create an explicit workspace:
+`demo` makes no model calls and needs no key. It creates a fresh `public-synthetic` Lighthouse workspace in the system temporary directory, fills the Decision / Assumption / Evidence / reviewed Experiment chain, and stops before the `decision accept` Human Gate. `ask` recommends the smallest suitable skill without writing by default. For a persistent private project, create an explicit workspace:
 
 ```bash
 python -m gamedesignos start "Lighthouse Tactics" --destination ../lighthouse-designos
@@ -69,7 +70,7 @@ You still make the calls. The system supplies specialist workflows, shared hando
 | Contract schemas | 19 | Stable handoffs for decisions, assumptions, evidence, experiments, UL state, learning, gates, workflows, issues, player promises, AI work orders, and project assets |
 | v1 workspace sections | 9 | Nine lifecycle directories: Inbox, Decisions, Assumptions, Evidence, Experiments, Design Assets, Workflows, Learning, and Exports; runtime state stays separate under `.gamedesignos/` |
 | Workflow guides | 5 | Idea-to-validation, media-to-diagnosis, weekly ED experiment, evidence-to-proposal, and decision-to-information paths |
-| Host adapters | 4 | Codex, Claude Code, OpenAI-compatible agents, and local harness integration notes |
+| Host adapters | 4 | Codex, Claude Code, a runnable preview-first OpenAI-compatible reference host, and local harness notes |
 | Public proof cases | 2 | Evidence-linked game-analysis and experience-density examples with explicit source boundaries |
 | Runtime | 1 | Deterministic local CLI for routing, workspace creation, validation, health checks, graphs, gates, and review-safe packs |
 

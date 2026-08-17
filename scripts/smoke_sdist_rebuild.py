@@ -11,6 +11,9 @@ from pathlib import Path
 
 
 REQUIRED_WHEEL_FILES = {
+    "gamedesignos/application/__init__.py",
+    "gamedesignos/application/project_queries.py",
+    "gamedesignos/demo.py",
     "gamedesignos/_data/contracts/router.yaml",
     "gamedesignos/_data/contracts/project-workspace.schema.json",
     "gamedesignos/_data/contracts/ul-state.schema.json",

@@ -8,7 +8,7 @@ import sys
 import tempfile
 import unittest
 import zipfile
-from contextlib import redirect_stderr
+from contextlib import redirect_stderr, redirect_stdout
 from pathlib import Path
 from unittest.mock import patch
 
@@ -25,6 +25,7 @@ from gamedesignos.project_ready import (
 from gamedesignos.routing import route_task
 from gamedesignos.voi import create_assessment, review_assessment
 from gamedesignos.workspace import Workspace, init_workspace
+from scripts.create_golden_project import main as create_golden_project
 
 
 class RuntimeCliTest(unittest.TestCase):
@@ -619,6 +620,70 @@ class RuntimeCliTest(unittest.TestCase):
         )
         self.assertEqual(result.returncode, EXIT_OK, result.stderr.decode("utf-8", errors="replace"))
         self.assertIn("已接住", result.stdout.decode("utf-8"))
+
+    def test_28_demo_reaches_human_gate_without_accepting_decision(self) -> None:
+        stdout = io.StringIO()
+        with patch(
+            "gamedesignos.demo.tempfile.gettempdir",
+            return_value=str(self.root),
+        ), redirect_stdout(stdout):
+            result = main(["demo", "--json"])
+
+        self.assertEqual(result, EXIT_OK)
+        payload = json.loads(stdout.getvalue())
+        target = Path(payload["workspace"])
+        self.assertEqual(target.parent, self.root)
+        self.assertTrue(target.name.startswith("gamedesignos-demo-"))
+        self.assertEqual(payload["mode"], "public-synthetic")
+        self.assertEqual(payload["model_calls"], 0)
+        self.assertFalse(payload["credentials_required"])
+        self.assertEqual(payload["decision"]["status"], "proposed")
+        self.assertEqual(payload["assumption"]["status"], "tested")
+        self.assertEqual(payload["experiment"]["outcome"], "passed")
+        self.assertEqual(payload["experiment"]["review_status"], "reviewed")
+        self.assertEqual(payload["human_gate"]["status"], "ask_human")
+        self.assertTrue(payload["human_gate"]["required"])
+        self.assertEqual(payload["workflow"]["current_node"], "human_decision")
+        self.assertTrue(payload["validation"]["workspace"]["ok"])
+        self.assertTrue(payload["validation"]["workflow"]["ok"])
+        decision_path = next((target / "01-decisions").glob("DEC-*.json"))
+        decision = json.loads(decision_path.read_text(encoding="utf-8"))
+        self.assertEqual(decision["status"], "proposed")
+        self.assertNotIn("accepted_by", decision)
+
+    def test_29_demo_refuses_nonempty_destination(self) -> None:
+        target = self.root / "occupied-demo"
+        target.mkdir()
+        keep = target / "keep.txt"
+        keep.write_text("keep", encoding="utf-8")
+        stderr = io.StringIO()
+        with redirect_stderr(stderr):
+            result = main(["demo", "--destination", str(target)])
+
+        self.assertNotEqual(result, EXIT_OK)
+        self.assertIn("Refusing to overwrite", stderr.getvalue())
+        self.assertEqual(keep.read_text(encoding="utf-8"), "keep")
+
+    def test_30_golden_generator_uses_explicit_fixture_acceptance(self) -> None:
+        target = self.root / "golden-fixture"
+        stdout = io.StringIO()
+        with patch.object(
+            sys,
+            "argv",
+            ["create_golden_project.py", "--destination", str(target)],
+        ), redirect_stdout(stdout):
+            result = create_golden_project()
+
+        self.assertEqual(result, EXIT_OK)
+        self.assertIn("OK: golden project created", stdout.getvalue())
+        workspace = Workspace.open(target)
+        decision_path = next((target / "01-decisions").glob("DEC-*.json"))
+        decision = json.loads(decision_path.read_text(encoding="utf-8"))
+        self.assertEqual(decision["accepted_by"], "fixture")
+        run_path = next((target / ".gamedesignos" / "workflow-runs").glob("WRUN-*.json"))
+        workflow = json.loads(run_path.read_text(encoding="utf-8"))
+        self.assertEqual(workflow["status"], "completed")
+        self.assertTrue(workspace.validate().ok)
 
 
 if __name__ == "__main__":

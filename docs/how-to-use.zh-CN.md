@@ -2,6 +2,14 @@
 
 GameDesignOS 有三种用法。新用户只需要先记第一种。
 
+第一次接触时，可以先运行一条零配置演示：
+
+```bash
+python -m gamedesignos demo
+```
+
+它只生成公开 synthetic 数据，不调用模型、不需要密钥，并在 Commitment Human Gate 前停住。默认使用系统临时目录；指定 `--destination <空目录>` 可保留在固定位置。
+
 ## 1. 拉取后随便发一句
 
 如果你在 Codex、Claude Code、OpenCode 这类支持 `AGENTS.md` 的 agent 环境里，直接发一句需求即可。agent 会自己判断该用哪个 skill、是否要开 Project workspace、是否需要追问材料，然后继续产出结果。

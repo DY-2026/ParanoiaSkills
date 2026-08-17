@@ -19,12 +19,18 @@
 
 ## 自己重新生成一份
 
-在仓库根目录运行：
+只想看停在 Human Gate 前的零配置演示：
+
+```bash
+python -m gamedesignos demo --destination ../gamedesignos-demo-lighthouse
+```
+
+要重建与检入样例一致、带 fixture acceptance 的维护者版本，在仓库根目录运行：
 
 ```bash
 python scripts/create_golden_project.py --destination ../gamedesignos-golden-lighthouse
 ```
 
-脚本只创建一个全新的 `public-synthetic` workspace；目标目录非空时会拒绝覆盖。完成后会自动执行 workspace validation。检入的 `workspace/` 就是用同一脚本生成的，未经手工修改。
+`demo` 与维护者脚本共用包内的同一条生成逻辑；前者不会替用户接受 Decision，后者只为检入的公开 synthetic fixture 写入明确的 `fixture` acceptance。两者都只创建全新的 `public-synthetic` workspace，目标目录非空时拒绝覆盖，并执行 workspace validation。检入的 `workspace/` 是用维护者脚本生成的，未经手工修改。
 
 黄金案例明确不证明真实留存、商业需求或发行表现。它只验证产品工作流、契约和安全门能够闭环运行。

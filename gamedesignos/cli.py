@@ -8,7 +8,20 @@ import sys
 from pathlib import Path
 from typing import Any, Sequence
 
+from .application import (
+    export_project_graph,
+    get_next_action,
+    get_project_health,
+    get_project_status,
+    inspect_project_decision,
+    inspect_project_evidence,
+    inspect_project_graph,
+    preview_gate,
+    route_project_task,
+    validate_project_workspace,
+)
 from .constants import ASSET_SPECS, RUNTIME_VERSION, VALID_VISIBILITIES
+from .demo import create_lighthouse_demo
 from .errors import EXIT_INCOMPATIBLE_VERSION, EXIT_OK, EXIT_VALIDATION, GameDesignOSError, UsageError
 from .project_ready import (
     GATE_TYPES,
@@ -16,16 +29,10 @@ from .project_ready import (
     add_experiment_result,
     create_assumption,
     create_decision,
-    export_graph_mermaid,
-    health_scan,
-    inspect_decision,
-    inspect_evidence,
-    inspect_graph,
     list_assumptions,
     list_decisions,
     list_evidence,
     list_workflows,
-    next_best_action,
     plan_experiment,
     review_experiment,
     run_gate,
@@ -37,11 +44,11 @@ from .project_ready import (
     workflow_next,
     workflow_status,
 )
-from .routing import route_task, router_source
 from .voi import create_assessment, review_assessment
 from .workspace import Workspace, doctor, init_workspace
 
 KNOWN_COMMANDS = {
+    "demo",
     "ask",
     "init",
     "start",
@@ -121,6 +128,20 @@ def build_parser() -> argparse.ArgumentParser:
     )
     parser.add_argument("--version", action="version", version=f"%(prog)s {RUNTIME_VERSION}")
     sub = parser.add_subparsers(dest="command", required=True)
+
+    p = sub.add_parser(
+        "demo",
+        help="Create a synthetic end-to-end decision loop",
+        description=(
+            "Create a fresh public-synthetic Lighthouse workspace, validate the decision loop, "
+            "and stop before the Commitment Human Gate. No model or API key is used."
+        ),
+    )
+    p.add_argument(
+        "--destination",
+        help="Fresh empty directory; defaults to a unique system temporary directory",
+    )
+    p.add_argument("--json", action="store_true", help="Emit the complete machine-readable summary")
 
     p = sub.add_parser("ask", help="Use one sentence to route or start GameDesignOS work")
     p.add_argument("text", nargs="+")
@@ -359,10 +380,36 @@ def build_parser() -> argparse.ArgumentParser:
 
 
 def _run(args: argparse.Namespace) -> int:
+    if args.command == "demo":
+        result = create_lighthouse_demo(_path(args.destination))
+        decision = result["decision"]
+        assumption = result["assumption"]
+        evidence = result["evidence"]
+        experiment = result["experiment"]
+        human_gate = result["human_gate"]
+        text = (
+            f"GameDesignOS demo 已生成：{result['workspace']}\n"
+            "模式：public-synthetic｜模型调用：0｜无需密钥\n"
+            f"Decision：{decision['decision_id']} [{decision['status']}] "
+            f"{decision['current_default_action']}\n"
+            f"Assumption：{assumption['assumption_id']} [{assumption['status']}] "
+            f"{assumption['statement']}\n"
+            f"Evidence：{evidence['evidence_id']} [{evidence['source_status']}] "
+            f"{evidence['summary']}\n"
+            f"Experiment：{experiment['experiment_id']} "
+            f"[{experiment['outcome']}/{experiment['review_status']}]\n"
+            f"Human Gate：{human_gate['status']} — {human_gate['reason']}\n"
+            f"下一步：{result['next_action']['reason']}\n"
+            f"命令提示：{result['next_action']['command_hint']}\n"
+            "证据边界：synthetic fixture 不证明真实留存、商业需求、模型质量或发布准备度。"
+        )
+        _emit(result, as_json=args.json, text=text)
+        return EXIT_OK
+
     if args.command == "ask":
         sentence = " ".join(args.text).strip()
         workspace = _open_workspace_safely(_path(args.workspace))
-        route = route_task(sentence, workspace=workspace)
+        route = route_project_task(sentence, workspace=workspace)
         selected = route.get("selected_skill")
         start_result = None
         # Routing confidence describes match quality, not authorization to write.
@@ -383,7 +430,7 @@ def _run(args: argparse.Namespace) -> int:
                 assumption="这个想法的核心体验能在三分钟内被理解，并产生继续尝试的动机。",
             )
             workspace = Workspace.open(Path(start_result["workspace"]))
-            route = route_task(sentence, workspace=workspace)
+            route = route_project_task(sentence, workspace=workspace)
             selected = route.get("selected_skill")
 
         result = {
@@ -456,15 +503,15 @@ def _run(args: argparse.Namespace) -> int:
         return EXIT_OK
 
     if args.command == "status":
-        status = _workspace(args).status()
+        status = get_project_status(_workspace(args))
         text = (
-            f"{status.title} [{status.project_id}]\nStatus: {status.project_status} | Visibility: {status.visibility}\n"
-            f"Workspace schema: {status.workspace_schema_version} | Declared runtime: {status.runtime_version_declared} | Current CLI: {status.runtime_version_current}\n"
-            f"Assets: {sum(status.asset_counts_by_type.values())} | Accepted decisions: {status.accepted_decisions} | Open Human Gates: {status.unresolved_human_gates}\n"
-            f"Compatibility: {'OK' if status.compatible else 'FAILED'}"
+            f"{status['title']} [{status['project_id']}]\nStatus: {status['project_status']} | Visibility: {status['visibility']}\n"
+            f"Workspace schema: {status['workspace_schema_version']} | Declared runtime: {status['runtime_version_declared']} | Current CLI: {status['runtime_version_current']}\n"
+            f"Assets: {sum(status['asset_counts_by_type'].values())} | Accepted decisions: {status['accepted_decisions']} | Open Human Gates: {status['unresolved_human_gates']}\n"
+            f"Compatibility: {'OK' if status['compatible'] else 'FAILED'}"
         )
-        _emit(status.as_dict(), as_json=args.json, text=text)
-        return EXIT_OK if status.compatible else EXIT_INCOMPATIBLE_VERSION
+        _emit(status, as_json=args.json, text=text)
+        return EXIT_OK if status["compatible"] else EXIT_INCOMPATIBLE_VERSION
 
     if args.command == "route":
         workspace = _workspace(args) if args.workspace else None
@@ -473,8 +520,7 @@ def _run(args: argparse.Namespace) -> int:
                 workspace = Workspace.open()
             except GameDesignOSError:
                 pass
-        result = route_task(" ".join(args.task), workspace=workspace)
-        result["router_source"] = router_source(workspace)
+        result = route_project_task(" ".join(args.task), workspace=workspace)
         selected = result.get("selected_skill") or "no stable route"
         text = f"Route: {selected}"
         if result.get("target_skill") and result["target_skill"] != selected:
@@ -487,7 +533,7 @@ def _run(args: argparse.Namespace) -> int:
         return EXIT_OK
 
     if args.command == "health":
-        result = health_scan(_workspace(args))
+        result = get_project_health(_workspace(args))
         blockers = []
         if result["high_impact_decisions_without_rollback"]:
             blockers.append(
@@ -510,7 +556,7 @@ def _run(args: argparse.Namespace) -> int:
         return EXIT_OK if result["ok"] else EXIT_VALIDATION
 
     if args.command == "next":
-        result = next_best_action(_workspace(args))
+        result = get_next_action(_workspace(args))
         text = f"Next: {result['action']}"
         if result.get("target"):
             text += f" -> {result['target']}"
@@ -520,11 +566,11 @@ def _run(args: argparse.Namespace) -> int:
 
     if args.command == "gate":
         if args.gate_command == "run":
-            result = run_gate(
-                _workspace(args),
-                args.gate_type,
-                args.target,
-                write=args.write,
+            workspace = _workspace(args)
+            result = (
+                run_gate(workspace, args.gate_type, args.target, write=True)
+                if args.write
+                else preview_gate(workspace, args.gate_type, args.target)
             )
             text = f"{result['gate_type']} gate for {result['target']}: {result['status']}\n{result['reason']}"
             if result["required_actions"]:
@@ -538,12 +584,11 @@ def _run(args: argparse.Namespace) -> int:
 
     if args.command == "graph":
         if args.graph_command == "export":
-            mermaid = export_graph_mermaid(_workspace(args))
-            result = {"format": args.format, "graph": mermaid}
-            _emit(result, as_json=args.json, text=mermaid)
+            result = export_project_graph(_workspace(args), format=args.format)
+            _emit(result, as_json=args.json, text=result["graph"])
             return EXIT_OK
         if args.graph_command == "inspect":
-            result = inspect_graph(_workspace(args), args.target)
+            result = inspect_project_graph(_workspace(args), args.target)
             text = (
                 f"{result['target']['id']} [{result['target']['type']}]\n"
                 f"Incoming: {len(result['incoming'])} | Outgoing: {len(result['outgoing'])}"
@@ -582,7 +627,7 @@ def _run(args: argparse.Namespace) -> int:
             _emit(result, as_json=args.json, text=text)
             return EXIT_OK
         if args.decision_command == "inspect":
-            result = inspect_decision(workspace, args.decision_id)
+            result = inspect_project_decision(workspace, args.decision_id)
             text = f"{result['decision_id']} [{result['status']}]\n{result['decision_question']}"
             _emit(result, as_json=args.json, text=text)
             return EXIT_OK
@@ -670,7 +715,7 @@ def _run(args: argparse.Namespace) -> int:
             _emit(result, as_json=args.json, text=text)
             return EXIT_OK
         if args.evidence_command == "inspect":
-            result = inspect_evidence(workspace, args.evidence_id)
+            result = inspect_project_evidence(workspace, args.evidence_id)
             _emit(result, as_json=args.json, text=f"{result['evidence_id']}\n{result['summary']}")
             return EXIT_OK
 
@@ -755,13 +800,13 @@ def _run(args: argparse.Namespace) -> int:
         return EXIT_OK
 
     if args.command == "validate":
-        report = _workspace(args).validate(repo_root=_path(args.repo_root))
-        text = "Workspace validation passed." if report.ok else "Workspace validation failed:\n- " + "\n- ".join(report.errors)
-        if report.warnings:
-            text += "\nWarnings:\n- " + "\n- ".join(report.warnings)
-        _emit(report.as_dict(), as_json=args.json, text=text)
-        incompatible = any("Unsupported workspace schema" in item or "incompatible with runtime" in item for item in report.errors)
-        return EXIT_OK if report.ok else (EXIT_INCOMPATIBLE_VERSION if incompatible else EXIT_VALIDATION)
+        report = validate_project_workspace(_workspace(args), repo_root=_path(args.repo_root))
+        text = "Workspace validation passed." if report["ok"] else "Workspace validation failed:\n- " + "\n- ".join(report["errors"])
+        if report["warnings"]:
+            text += "\nWarnings:\n- " + "\n- ".join(report["warnings"])
+        _emit(report, as_json=args.json, text=text)
+        incompatible = any("Unsupported workspace schema" in item or "incompatible with runtime" in item for item in report["errors"])
+        return EXIT_OK if report["ok"] else (EXIT_INCOMPATIBLE_VERSION if incompatible else EXIT_VALIDATION)
 
     if args.command == "voi":
         if args.input:

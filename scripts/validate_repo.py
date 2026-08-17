@@ -36,7 +36,11 @@ REQUIRED_PATHS = [
     "MANIFEST.in",
     "setup.py",
     "gamedesignos/_version.py",
+    "gamedesignos/application/__init__.py",
+    "gamedesignos/application/project_queries.py",
+    "gamedesignos/demo.py",
     "adapters/README.md",
+    "adapters/openai-compatible.md",
     "contracts/README.md",
     "contracts/router.yaml",
     "contracts/intent-work-order.schema.json",
@@ -59,10 +63,12 @@ REQUIRED_PATHS = [
     "docs/product/architecture.md",
     "docs/product/mvp-definition.md",
     "docs/product/roadmap.md",
+    "docs/product/v1.4-mcp-boundary-rfc.md",
     "docs/how-to-use.zh-CN.md",
     "docs/try-it-in-10-minutes.zh-CN.md",
     "docs/GITHUB_ABOUT.md",
     "docs/github-about-checklist.md",
+    "docs/2026-08-15-deepseek-harness-engineering-fit.md",
     "docs/workflows/README.md",
     "docs/workflows/decision-to-information.md",
     "docs/workflows/idea-to-validation.md",
@@ -126,7 +132,11 @@ REQUIRED_PATHS = [
     "scripts/smoke_installed_wheel.py",
     "scripts/smoke_sdist_rebuild.py",
     "scripts/create_golden_project.py",
+    "scripts/tests/test_application_services.py",
     "examples/golden-lighthouse/README.md",
+    "examples/hosts/README.md",
+    "examples/hosts/openai_compatible.py",
+    "examples/hosts/fixtures/openai-chat-completion.json",
 ]
 
 WORKSPACE_TEMPLATE_DIRS = {
@@ -623,6 +633,99 @@ def _check_public_readme_surface(repo_root: Path, errors: list[str]) -> None:
                 errors.append(f"{relative}: local link target missing: {reference}")
 
 
+def _check_openai_compatible_host(repo_root: Path, errors: list[str]) -> None:
+    host_path = repo_root / "examples" / "hosts" / "openai_compatible.py"
+    adapter_path = repo_root / "adapters" / "openai-compatible.md"
+    guide_path = repo_root / "examples" / "hosts" / "README.md"
+    for path, markers in (
+        (
+            host_path,
+            (
+                "GAMEDESIGNOS_API_KEY",
+                "request-preview.private.json",
+                "dispatch_intent_recorded",
+                "outcome_unknown",
+                "safe_to_retry",
+                "--execute",
+            ),
+        ),
+        (
+            adapter_path,
+            (
+                "runnable",
+                "outcome_unknown",
+                "no automatic retry",
+                "Offline Fixture",
+            ),
+        ),
+        (
+            guide_path,
+            (
+                "默认 dry-run",
+                "一次性授权",
+                "不会直接写入 Project-Ready workspace",
+            ),
+        ),
+    ):
+        if not path.exists():
+            continue
+        text = path.read_text(encoding="utf-8")
+        for marker in markers:
+            if marker not in text:
+                errors.append(f"{path}: missing OpenAI-compatible host marker {marker}")
+
+    chinese_guide = repo_root / "docs" / "try-it-in-10-minutes.zh-CN.md"
+    if chinese_guide.exists():
+        text = chinese_guide.read_text(encoding="utf-8")
+        if "默认只做路由和状态审计" not in text or "不会创建或修改 workspace" not in text:
+            errors.append(f"{chinese_guide}: ask/start behavior parity marker missing")
+        if "对项目型请求，还会创建 Project-Ready workspace" in text:
+            errors.append(f"{chinese_guide}: still claims implicit workspace creation")
+
+
+def _check_application_service_and_mcp_boundary(repo_root: Path, errors: list[str]) -> None:
+    service_path = repo_root / "gamedesignos" / "application" / "project_queries.py"
+    cli_path = repo_root / "gamedesignos" / "cli.py"
+    rfc_path = repo_root / "docs" / "product" / "v1.4-mcp-boundary-rfc.md"
+
+    if service_path.exists():
+        service = service_path.read_text(encoding="utf-8")
+        for marker in (
+            "def get_project_status",
+            "def route_project_task",
+            "def preview_gate",
+            "write=False",
+            "def validate_project_workspace",
+        ):
+            if marker not in service:
+                errors.append(f"{service_path}: missing read-only Application Service marker {marker}")
+
+    if cli_path.exists():
+        cli = cli_path.read_text(encoding="utf-8")
+        for marker in (
+            "from .application import",
+            "get_project_status(_workspace(args))",
+            "preview_gate(workspace, args.gate_type, args.target)",
+        ):
+            if marker not in cli:
+                errors.append(f"{cli_path}: CLI does not reuse Application Service marker {marker}")
+
+    if rfc_path.exists():
+        rfc = rfc_path.read_text(encoding="utf-8")
+        for marker in (
+            "状态：`candidate`",
+            "MCP `2026-07-28`",
+            "stdio-first",
+            "Application Service",
+            "preview_gate",
+            "Human Gate",
+            "needs_more_evidence",
+            "Rollback",
+        ):
+            if marker not in rfc:
+                errors.append(f"{rfc_path}: missing MCP boundary marker {marker}")
+
+
 def _check_p0_portability(repo_root: Path, errors: list[str]) -> None:
     pyproject = tomllib.loads((repo_root / "pyproject.toml").read_text(encoding="utf-8"))
     project = pyproject["project"]
@@ -785,6 +888,8 @@ def main() -> int:
     _check_paranoia_voi(repo_root, all_errors)
     _check_project_workflow_governance(repo_root, all_errors)
     _check_public_readme_surface(repo_root, all_errors)
+    _check_openai_compatible_host(repo_root, all_errors)
+    _check_application_service_and_mcp_boundary(repo_root, all_errors)
     _check_p0_portability(repo_root, all_errors)
     _check_repo_data_files(repo_root, all_errors)
     _check_trilingual_mirrors(repo_root, all_errors)
